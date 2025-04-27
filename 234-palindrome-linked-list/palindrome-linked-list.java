@@ -1,34 +1,33 @@
-/**
- * Definition for singly-linked list.
- * public class ListNode {
- *     int val;
- *     ListNode next;
- *     ListNode() {}
- *     ListNode(int val) { this.val = val; }
- *     ListNode(int val, ListNode next) { this.val = val; this.next = next; }
- * }
- */
 class Solution {
+    // This variable is used to track the current node from the front of the list
     ListNode left;
 
     public boolean isPalindrome(ListNode head) {
-        left=head;
-        return helper(head);
+        left = head; // Initialize left pointer to the head of the list
+        return helper(head); // Start the recursion with the head node
     }
 
-    public boolean helper(ListNode right){
-        if(right==null){
-            return true; //reached at the last of the list
+    // Helper function that does the actual recursion with the right pointer
+    private boolean helper(ListNode right) {
+        // Base case: If right pointer reaches null, we've checked all nodes
+        if (right == null) {
+            return true;
         }
-        boolean isPalindrome=helper(right.next);
 
-        if(!isPalindrome){
-            return false;  //list is not PALINDROME
+        // Recursively call helper on the next node (move right pointer)
+        boolean isPalindrome = helper(right.next);
+
+        // If at any point the list is found not to be a palindrome, return false
+        if (!isPalindrome) {
+            return false;
         }
-        boolean result=(left.val==right.val);
 
-        left=left.next;
+        // Compare the current left and right values
+        boolean result = (left.val == right.val);
 
-        return result;
+        // Move the left pointer forward after comparison
+        left = left.next;
+
+        return result;  // Return true if both values match, otherwise false
     }
 }
