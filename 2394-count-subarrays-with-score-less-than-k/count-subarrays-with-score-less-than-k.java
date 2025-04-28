@@ -1,22 +1,21 @@
 class Solution {
     public long countSubarrays(int[] nums, long k) {
-        int n = nums.length;
-        int left = 0;
+        long ans = 0;
         long sum = 0;
-        long count = 0;
+        int left = 0;
+        int n = nums.length;
 
         for (int right = 0; right < n; right++) {
             sum += nums[right];
 
-            // Check if score >= k
-            while (left <= right && sum * (right - left + 1) >= k) {
-                sum -= nums[left];
-                left++;
+            // Instead of recalculating right-left+1 every time, use a variable
+            while (sum * (right - left + 1) >= k) {
+                sum -= nums[left++];
             }
-
-            count += (right - left + 1);
+            
+            ans += (right - left + 1);
         }
 
-        return count;
+        return ans;
     }
 }
