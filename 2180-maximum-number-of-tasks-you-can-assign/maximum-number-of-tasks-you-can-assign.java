@@ -22,8 +22,8 @@ class Solution {
 
     private boolean canAssign(int[] tasks, int[] workers, int pills, int strength, int k) {
         Deque<Integer> taskQueue = new ArrayDeque<>();
-        for (int i = k - 1; i >= 0; i--) {
-            taskQueue.addLast(tasks[i]);
+        for (int i = 0; i < k; i++) {
+            taskQueue.addLast(tasks[i]);  // k easiest tasks
         }
 
         TreeMap<Integer, Integer> workerMap = new TreeMap<>();
@@ -31,36 +31,34 @@ class Solution {
             workerMap.put(workers[i], workerMap.getOrDefault(workers[i], 0) + 1);
         }
 
-        int pillsLeft = pills;
+        int remainingPills = pills;
 
         while (!taskQueue.isEmpty()) {
-            int task = taskQueue.pollFirst();
+            int task = taskQueue.pollLast(); // hardest task left
 
-            // Try to assign without pill
-            Integer normalWorker = workerMap.ceilingKey(task);
-            if (normalWorker != null) {
-                removeWorker(workerMap, normalWorker);
+            Integer directWorker = workerMap.ceilingKey(task);
+            if (directWorker != null) {
+                decrement(workerMap, directWorker);
                 continue;
             }
 
-            // Try to assign with pill
-            if (pillsLeft == 0) return false;
+            if (remainingPills == 0) return false;
+
             Integer pillWorker = workerMap.ceilingKey(task - strength);
             if (pillWorker == null) return false;
 
-            removeWorker(workerMap, pillWorker);
-            pillsLeft--;
+            decrement(workerMap, pillWorker);
+            remainingPills--;
         }
 
         return true;
     }
 
-    private void removeWorker(TreeMap<Integer, Integer> map, int key) {
-        int count = map.get(key);
-        if (count == 1) {
+    private void decrement(TreeMap<Integer, Integer> map, int key) {
+        if (map.get(key) == 1) {
             map.remove(key);
         } else {
-            map.put(key, count - 1);
+            map.put(key, map.get(key) - 1);
         }
     }
 }
