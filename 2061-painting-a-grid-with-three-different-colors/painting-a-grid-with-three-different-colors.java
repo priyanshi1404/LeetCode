@@ -2,64 +2,94 @@ class Solution {
     static final int MOD = 1_000_000_007;
 
     public int colorTheGrid(int m, int n) {
-        List<Integer> validStates = new ArrayList<>();
-        Map<Integer, List<Integer>> compatible = new HashMap<>();
+        List<Integer> states = new ArrayList<>();
+        Map<Integer, Integer> stateToIndex = new HashMap<>();
 
-        generateValidStates(0, -1, m, 0, validStates);
+        generateStates(0, -1, m, 0, states);
 
-        for (int a : validStates) {
-            for (int b : validStates) {
-                if (isCompatible(a, b, m)) {
-                    compatible.computeIfAbsent(a, x -> new ArrayList<>()).add(b);
+        int size = states.size();
+        for (int i = 0; i < size; i++) {
+            stateToIndex.put(states.get(i), i);
+        }
+
+        // Build transition matrix
+        long[][] T = new long[size][size];
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                if (isCompatible(states.get(i), states.get(j), m)) {
+                    T[i][j] = 1;
                 }
             }
         }
 
-        Map<Integer, Integer> dp = new HashMap<>();
-        for (int state : validStates) {
-            dp.put(state, 1);
-        }
+        // Matrix exponentiation: T^(n-1)
+        long[][] T_pow = matrixPower(T, n - 1);
 
-        for (int i = 1; i < n; i++) {
-            Map<Integer, Integer> newDp = new HashMap<>();
-            for (int prev : dp.keySet()) {
-                int count = dp.get(prev);
-                for (int next : compatible.get(prev)) {
-                    newDp.put(next, (newDp.getOrDefault(next, 0) + count) % MOD);
-                }
+        // Initial vector (all ones)
+        long[] dp = new long[size];
+        Arrays.fill(dp, 1);
+
+        // Multiply T^(n-1) * dp
+        long result = 0;
+        for (int i = 0; i < size; i++) {
+            long sum = 0;
+            for (int j = 0; j < size; j++) {
+                sum = (sum + T_pow[i][j] * dp[j]) % MOD;
             }
-            dp = newDp;
+            result = (result + sum) % MOD;
         }
 
-        int result = 0;
-        for (int val : dp.values()) {
-            result = (result + val) % MOD;
-        }
-
-        return result;
+        return (int) result;
     }
 
-    private void generateValidStates(int pos, int prevColor, int m, int currState, List<Integer> states) {
+    private void generateStates(int pos, int prevColor, int m, int state, List<Integer> result) {
         if (pos == m) {
-            states.add(currState);
+            result.add(state);
             return;
         }
 
-        for (int color = 0; color < 3; color++) {
-            if (color != prevColor) {
-                generateValidStates(pos + 1, color, m, currState * 3 + color, states);
+        for (int c = 0; c < 3; c++) {
+            if (c != prevColor) {
+                generateStates(pos + 1, c, m, state * 3 + c, result);
             }
         }
     }
 
     private boolean isCompatible(int a, int b, int m) {
         for (int i = 0; i < m; i++) {
-            int ca = a % 3;
-            int cb = b % 3;
-            if (ca == cb) return false;
+            if (a % 3 == b % 3) return false;
             a /= 3;
             b /= 3;
         }
         return true;
+    }
+
+    private long[][] matrixMultiply(long[][] A, long[][] B) {
+        int n = A.length;
+        long[][] C = new long[n][n];
+        for (int i = 0; i < n; i++) {
+            for (int k = 0; k < n; k++) {
+                if (A[i][k] == 0) continue;
+                for (int j = 0; j < n; j++) {
+                    C[i][j] = (C[i][j] + A[i][k] * B[k][j]) % MOD;
+                }
+            }
+        }
+        return C;
+    }
+
+    private long[][] matrixPower(long[][] A, int power) {
+        int n = A.length;
+        long[][] res = new long[n][n];
+        for (int i = 0; i < n; i++) res[i][i] = 1;
+
+        while (power > 0) {
+            if ((power & 1) == 1) {
+                res = matrixMultiply(res, A);
+            }
+            A = matrixMultiply(A, A);
+            power >>= 1;
+        }
+        return res;
     }
 }
