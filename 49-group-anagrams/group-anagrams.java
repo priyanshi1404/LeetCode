@@ -1,15 +1,33 @@
 class Solution {
-    //Approach 2-HASHING
-    public List<List<String>> groupAnagrams(String[] strs){
-            Map<String,List<String>>map=new HashMap<>();
-             for(String word:strs){
-            char w[]= word.toCharArray();
-            Arrays.sort(w);
-            String key=new String(w);
+    //Approach -3
+      public List<List<String>> groupAnagrams(String[] strs){
+        Map<String,List<String>>map=new HashMap<>();
+        for(String word: strs){
+            int countArr[]=new int[26];
+            for(char c:word.toCharArray()){
+                countArr[c-'a']++;
+            }
+            StringBuilder sb=new StringBuilder();
+            for(int k:countArr){
+                sb.append(k).append('#'); //1#1#1#
+            }
+            String key=sb.toString();
             map.computeIfAbsent(key,k->new ArrayList<>()).add(word);
         }
         return new ArrayList<>(map.values());
-     }
+      }
+
+    //Approach 2-HASHING
+    // public List<List<String>> groupAnagrams(String[] strs){
+    //         Map<String,List<String>>map=new HashMap<>();
+    //          for(String word:strs){
+    //         char w[]= word.toCharArray();
+    //         Arrays.sort(w);
+    //         String key=new String(w);
+    //         map.computeIfAbsent(key,k->new ArrayList<>()).add(word);
+    //     }
+    //     return new ArrayList<>(map.values());
+    //  }
 
     // //Approach 1-Brute Force solution
     // boolean isAnagramOld(String first,String second){
