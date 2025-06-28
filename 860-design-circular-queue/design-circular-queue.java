@@ -1,16 +1,11 @@
 class MyCircularQueue {
-    int[] arr;  //contains the data for queue
-    //maintain front and rear
-    int rear;
-    int front;
-    int size,count;
+    int [] arr;
+    int front,rear,size,count;
 
     public MyCircularQueue(int k) {
-        size =k;
+        size=k;
         arr= new int[k];
-        front=0;
-        rear=0;
-        count=0;
+        front=rear=count=0;
         
     }
     
@@ -18,8 +13,8 @@ class MyCircularQueue {
         if(isFull()){
             return false;
         }
-        arr[rear]= value;
-        rear = (rear + 1) % size;  //stays within the size
+        arr[rear]=value;
+        rear=(rear+1)% size; //rear stays within the range
         count++;
         return true;
         
@@ -29,10 +24,9 @@ class MyCircularQueue {
         if(isEmpty()){
             return false;
         }
-        front =(front + 1) % size;
+        front = (front+1)%size;
         count--;
         return true;
-        
     }
     
     public int Front() {
@@ -40,25 +34,21 @@ class MyCircularQueue {
             return -1;
         }
         return arr[front];
-        
     }
     
     public int Rear() {
-        if(isEmpty()){
+         if(isEmpty()){
             return -1;
         }
         return arr[(rear-1 + size)%size];
-        
     }
     
     public boolean isEmpty() {
-        return count ==0;
-        
+        return count==0;
     }
     
     public boolean isFull() {
-        return count ==size;
-        
+        return count==size;
     }
 }
 
