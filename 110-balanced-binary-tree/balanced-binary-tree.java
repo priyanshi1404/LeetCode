@@ -15,9 +15,9 @@
  */
 class Solution {
     public int height(TreeNode root){
-         if(root == null){
-        return -1;
-         }
+        if(root == null){
+            return -1;
+        }
         int left=height(root.left);
         int right=height(root.right);
         int max=Math.max(left,right);
@@ -27,10 +27,10 @@ class Solution {
         if(root == null){
             return true;
         }
-        int difference=Math.abs(height(root.left)- height(root.right));
-        if(difference>1){
-            return false;
-        }
-        return isBalanced(root.left) && isBalanced(root.right);
+       int diff= Math.abs(height(root.left) - height(root.right));
+       if(diff>1){
+        return false;
+       }
+       return isBalanced(root.left) && isBalanced(root.right);
     }
 }
