@@ -1,35 +1,31 @@
 class Solution {
     public List<List<Integer>> permuteUnique(int[] nums) {
-        List<List<Integer>> result = new ArrayList<>();
-        Arrays.sort(nums);  // Important to handle duplicates
-
-        boolean[] used = new boolean[nums.length];
-        backtrack(nums, new ArrayList<>(), used, result);
-
-        return result;
+        boolean [] isVisited = new boolean[nums.length]; //all are filled with false
+        List<Integer> smallList= new ArrayList<>();
+        List<List<Integer>> bigList= new ArrayList<>();
+        helper(nums,smallList,bigList,isVisited);
+        return bigList;
     }
-
-    private void backtrack(int[] nums, List<Integer> path, boolean[] used, List<List<Integer>> result) {
-        if (path.size() == nums.length) {
-            result.add(new ArrayList<>(path));
-            return;
+    //helper function
+    void helper(int nums[], List<Integer> smallList, List<List<Integer>> bigList, boolean [] isVisited){
+        //base case
+        if(nums.length == smallList.size() && !bigList.contains(smallList)){
+            bigList.add(new ArrayList<>(smallList));
+            return;  //Stack fall starts from here
         }
+        //start all the branch
+        for(int i=0; i<nums.length; i++){
+            if(!isVisited[i]){
+                smallList.add(nums[i]);
+                isVisited[i] = true;  //it is marked now
 
-        for (int i = 0; i < nums.length; i++) {
-            // Skip used elements
-            if (used[i]) continue;
+                // now a recursive call
+                helper(nums,smallList,bigList,isVisited);
 
-            // Skip duplicates: if current = previous and previous not used in current path
-            if (i > 0 && nums[i] == nums[i - 1] && !used[i - 1]) continue;
-
-            path.add(nums[i]);
-            used[i] = true;
-
-            backtrack(nums, path, used, result);
-
-            // Backtrack
-            path.remove(path.size() - 1);
-            used[i] = false;
+                //Bactracking
+                smallList.remove(smallList.size()-1);  //remove the last element
+                isVisited[i]= false;
+            }
         }
     }
 }
