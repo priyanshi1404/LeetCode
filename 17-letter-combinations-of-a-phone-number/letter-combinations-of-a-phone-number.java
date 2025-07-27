@@ -1,28 +1,35 @@
 class Solution {
-    private static final String[] KEYPAD = {
-        "",     "",     "abc", "def", "ghi",
-        "jkl", "mno", "pqrs", "tuv", "wxyz"
-    };
-
+    //making a combination array
+    String[] keys={"","","abc","def","ghi","jkl","mno","pqrs","tuv","wxyz"};  //starting from 0.  0-blank, 1- blank, starting from 2
     public List<String> letterCombinations(String digits) {
-        List<String> result = new ArrayList<>();
-        if (digits == null || digits.length() == 0) return result;
-
-        backtrack(digits, 0, new StringBuilder(), result);
-        return result;
+        if(digits.length() ==0){
+            return new ArrayList<>();
+        }
+        else{
+            return helper(digits);
+        }
     }
-
-    private void backtrack(String digits, int index, StringBuilder path, List<String> result) {
-        if (index == digits.length()) {
-            result.add(path.toString());
-            return;
+    public List<String> helper(String digits) {
+        //base case
+        if(digits.length()==0){
+            List<String> list = new ArrayList<>();
+            list.add("");  //making it traversable
+            return list;
         }
+        //new list
+        List<String> newList = new ArrayList<>();
 
-        String letters = KEYPAD[digits.charAt(index) - '0'];
-        for (char ch : letters.toCharArray()) {
-            path.append(ch);
-            backtrack(digits, index + 1, path, result);
-            path.deleteCharAt(path.length() - 1); // backtrack
+        char firstDigit = digits.charAt(0);
+        int index= firstDigit - '0';
+        String str= keys[index];
+        //e.g traverse abc
+        for(int i=0; i<str.length(); i++){
+            //small problem
+           List<String> oldList= helper(digits.substring(1));
+           for(int j=0; j<oldList.size(); j++){
+            newList.add(str.charAt(i) + oldList.get(j));
+           }
         }
+        return newList;
     }
 }
