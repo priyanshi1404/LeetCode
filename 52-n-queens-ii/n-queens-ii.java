@@ -1,32 +1,47 @@
 class Solution {
-    private int count = 0;
-
+    //chess board
+    boolean board[][];
     public int totalNQueens(int n) {
-        boolean[] cols = new boolean[n];
-        boolean[] diag1 = new boolean[2 * n - 1]; // row + col
-        boolean[] diag2 = new boolean[2 * n - 1]; // row - col + n - 1
-
-        backtrack(0, n, cols, diag1, diag2);
-        return count;
+        board=new boolean[n][n];  //board is filled with false now
+        return helper(0,n);
     }
-
-    private void backtrack(int row, int n, boolean[] cols, boolean[] diag1, boolean[] diag2) {
-        if (row == n) {
-            count++;
-            return;
+    boolean willIPlaceAQueen(int row, int col){
+        // CASE 1- above row
+        for(int i=row; i>=0; i--){
+            if(board[i][col]){
+                return false;
+            }
         }
-
-        for (int col = 0; col < n; col++) {
-            int d1 = row + col;
-            int d2 = row - col + n - 1;
-
-            if (cols[col] || diag1[d1] || diag2[d2]) continue;
-
-            cols[col] = diag1[d1] = diag2[d2] = true;
-
-            backtrack(row + 1, n, cols, diag1, diag2);
-
-            cols[col] = diag1[d1] = diag2[d2] = false; // backtrack
+        // CASE 2-left diagonal
+        for(int i=row,j=col; i>=0 && j>=0; i--,j--){
+            if(board[i][j]){
+                 return false;
+            }
         }
+        // CASE 3-right diagonal
+        for(int i=row,j=col; i>=0 && j<board[0].length; i--,j++){
+            if(board[i][j]){
+                 return false;
+            }
+        }
+        return true;   //place the queen
+    }
+    int helper(int row, int n){
+        //base case
+        if(row == n){
+            return 1;
+        }
+        int count=0;
+        //try to place a queen in a column
+        for(int col=0; col<n; col++){
+            if(willIPlaceAQueen(row,col)){
+                board[row][col] = true;
+                //move to the next row and col
+                count= count + helper(row+1, n);
+                //Stack fall(backtrack)
+                board[row][col]= false; //undo
+            }
+        }
+        return count;
     }
 }
