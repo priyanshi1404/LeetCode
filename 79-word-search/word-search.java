@@ -1,42 +1,43 @@
 class Solution {
     public boolean exist(char[][] board, String word) {
-        int rows = board.length, cols = board[0].length;
-
-        for (int r = 0; r < rows; r++) {
-            for (int c = 0; c < cols; c++) {
-                if (dfs(board, word, 0, r, c)) {
+        for(int i=0; i<board.length; i++){
+            for(int j=0; j<board[i].length; j++){
+                if(isFound(board, word,i,j)){
                     return true;
                 }
             }
         }
-
         return false;
     }
 
-    private boolean dfs(char[][] board, String word, int index, int r, int c) {
-        // Out of bounds or character mismatch
-        if (r < 0 || r >= board.length || c < 0 || c >= board[0].length || 
-            board[r][c] != word.charAt(index)) {
-            return false;
-        }
-
-        // All characters matched
-        if (index == word.length() - 1) {
+    //creating array for directions
+    int directions[][]={{1,0},{0,1},{-1,0},{0,-1}};
+    //if word exists in board or not
+    boolean isFound(char[][] board, String word,int row, int col){
+        //base case
+        if(word.length() == 0){
             return true;
         }
+        //negative base case
+        if(row<0 || col<0 || col>=board[0].length || row>=board.length || board[row][col] != word.charAt(0)){
+            return false;
+        }
+        //mark visited
+        board[row][col]='#';
+        //move in all directions
+        boolean isMatch= false;
+        for(int direction=0; direction<directions.length; direction++){
+            int nextRow= directions[direction][0];
+            int nextCol= directions[direction][1];
 
-        // Mark current cell as visited
-        char temp = board[r][c];
-        board[r][c] = '#'; // Use '#' to mark as visited
-
-        // Explore in 4 directions
-        boolean found = dfs(board, word, index + 1, r + 1, c) ||
-                        dfs(board, word, index + 1, r - 1, c) ||
-                        dfs(board, word, index + 1, r, c + 1) ||
-                        dfs(board, word, index + 1, r, c - 1);
-
-        board[r][c] = temp; // Backtrack (restore cell)
-
-        return found;
+            //recursive call
+            isMatch= isFound(board, word.substring(1), row+nextRow, col+nextCol);
+            if(isMatch){
+                break;
+            }
+        }
+         //stack fall(backtrack) undo the '#'
+            board[row][col]= word.charAt(0);
+            return isMatch;
     }
 }
