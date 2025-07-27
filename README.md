@@ -1,6 +1,6 @@
 # LeetCode Solutions 🧠💻
 
-This repository contains my solutions to various [LeetCode](https://leetcode.com/problemset/) problems. 
+This repository contains my solutions to various [LeetCode](https://leetcode.com/u/priyanshi14/) problems. 
 The goal is to improve problem-solving skills, master data structures and algorithms, and prepare for coding interviews.
 
 ---
