@@ -12,7 +12,8 @@ class Solution {
 
         // Second pass: fill remaining with zeros
         while (insertPos < nums.length) {
-            nums[insertPos++] = 0;
+            nums[insertPos] = 0;
+            insertPos++;
         }
     }
 }
