@@ -5,7 +5,8 @@ class Solution {
         // First pass: move non-zeros forward
         for (int num : nums) {
             if (num != 0) {
-                nums[insertPos++] = num;
+                nums[insertPos] = num;
+                insertPos++;
             }
         }
 
